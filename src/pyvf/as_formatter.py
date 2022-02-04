@@ -1,4 +1,5 @@
 from enum import Enum, auto
+from as_streamiter import ASStreamIterator
 
 class BracketMode(Enum):
     NONE_MODE=auto()
@@ -7,7 +8,17 @@ class BracketMode(Enum):
 
 class ASFormatter:
     headers: list[str]=[]
+    nonParenHeaders: list[str]=[]
+    # used for verilog
+    preprocessorHeaders:list[str]=[]
+    preCommandHeaders:list[str]=[]
+    operators:list[str]=[]
+    verilogBlockBegin:list[str]=[]
+    verilogBlockEnd:list[str]=[]
+    calledInitStatic:bool
+
     def __init__(self):
+        self.staticInit()
         
         self.preBracketHeaderStack=None
         self.parentStack=None
@@ -26,4 +37,9 @@ class ASFormatter:
     def __del__(self):
         raise NotImplementedError
     def staticInit(self):
+        if ASFormatter.calledInitStatic:
+            return
+        
+        ASFormatter.calledInitStatic=True
 
+        
