@@ -157,16 +157,26 @@ class ASBeautifier(ASResource):
         self.defineTabCount = 0
 
     def setTabIndentation(self, length: int = 4, forceTabs=False):
-        pass
+        self.indentString='\t'
+        self.indentLength=length
+        self.shouldForceTabIndentation=forceTabs
+
+        if not self.isMinimalConditinalIndentSet:
+            self.minConditionalIndent=self.indentLength*2
 
     def setSpaceIndentation(self, length: int = 4):
-        pass
+        self.indentString=' '*4
+        self.indentLength=length
+
+        if not self.isMinimalConditinalIndentSet:
+            self.minConditionalIndent=self.indentLength*2
 
     def setMaxInStatementIndentLength(self, max: int):
-        pass
+        self.maxInStatementIndent=max
 
     def setMinConditionIndentLength(self, min: int):
-        pass
+        self.minConditionalIndent = min;
+        self.isMinimalConditinalIndentSet = True;
 
     def setSwitchIndent(self, state: bool):
         pass
@@ -175,16 +185,44 @@ class ASBeautifier(ASResource):
         pass
 
     def setBracketIndent(self, state: bool):
-        pass
+        self.bracketIndent = state
 
     def setBlockIndent(self, state: bool):
-        pass
+        if state:
+            self.setBracketIndent(False)
+        self.blockIndent=state
 
     def setLabelIndent(self, state: bool):
-        pass
+        self.labelIndent=state
 
     def setEmptyLineFill(self, state: bool):
-        pass
+        self.emptyLineFill = state
 
     def setPreprocessorIndent(self, state: bool):
-        pass
+        self.preprocessorIndent = state
+    def hasMoreLines(self):
+        return self.sourceIterator.hasMoreLines()
+    def nextLine(self):
+        return self.beautify(self.sourceIterator.nextLine())
+    def beautify(self,originalLine:str):
+        if not self.isInComment:
+            pass
+        raise NotImplementedError
+    def preLineWS(self,spaceTabCount,tabCount)-> str:
+        """return a string with indents specified by counts"""
+        return self.indentString*tabCount+' '*spaceTabCount
+    def registerInStatementIndent(self,line,i,spaceTabCount,minIndent,updateParenStack):
+        raise NotImplementedError
+    def getNextProgramCharDistance(self,line,i):
+        raise NotImplementedError
+    def isLegalNameChar(self,ch)->bool:
+        return ch>='a' and ch<='z' or ch>='A' and ch<='Z' or ch>='0' and ch<='9' or ch in '._$`'
+    def isInVerilogNum(self,line,i):
+        raise NotImplementedError
+    def findHeader(self,line,i,possibleHeaders:list[str],checkBoundary):
+        maxHeaders:int=possibleHeaders.__len__()
+        header:str=""
+
+        for p in range(maxHeaders):
+            header=possibleHeaders
+    

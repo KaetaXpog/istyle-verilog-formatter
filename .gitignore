@@ -4,3 +4,5 @@ iStyle
 bin
 dep
 obj
+
+private/
